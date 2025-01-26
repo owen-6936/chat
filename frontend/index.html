@@ -4,8 +4,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>sign in</title>
+    <link rel="stylesheet" href="stylesheets/index.css" />
+    <script src="scripts/index.js"></script>
   </head>
   <body>
-    <h1>Setting up project for development</h1>
+    <form>
+      <label for="email"></label>
+      <input
+        type="email"
+        name="email"
+        id="email"
+        required
+        placeholder="Email address"
+      />
+      <label for="password"></label>
+      <input
+        type="password"
+        name="password"
+        id="password"
+        required
+        placeholder="password"
+      />
+      <span class="login-text"
+        >don't have an account? <span class="link">create account</span></span
+      >
+      <span
+        ><input type="checkbox" name="checkbox" id="checkbox" /><label
+          for="checkbox"
+          >remember me</label
+        ></span
+      >
+      <button type="submit">sign in</button>
+    </form>
   </body>
 </html>
