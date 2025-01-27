@@ -5,7 +5,7 @@
 html,
 body {
   height: 100%;
-  margin: 0 8px;
+  margin: 0;
   box-sizing: border-box;
   align-content: center;
   font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -28,6 +28,9 @@ body,
     hsla(186, 100%, 69%, 1) 100%
   );
 }
+.d-none {
+  display: none;
+}
 .link {
   color: #133e87;
   text-decoration: underline;
@@ -43,22 +46,31 @@ form {
   border-radius: 5px;
   padding: 20px;
   max-width: 500px;
-  height: 350px;
+  height: 450px;
   margin: auto;
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
+  flex-flow: row wrap;
   justify-content: space-around;
   align-items: center;
   .form-header {
     margin-top: 0;
+    width: 100%;
+    text-align: center;
   }
   input {
     padding: 10px;
     font-size: 16px;
     border-radius: 5px;
+    width: 90%;
   }
   input:focus {
     border-bottom: 3px solid;
+  }
+  input.firstName,
+  input.lastName {
+    width: 40%;
   }
   button {
     width: 200px;
@@ -77,4 +89,20 @@ form {
   .login-text {
     padding: 20px;
   }
+  .check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    padding: 2px;
+    input,
+    label {
+      display: inline-block;
+      width: max-content;
+      padding: 10px;
+    }
+  }
+}
+#reg-form {
+  margin: 0;
 }

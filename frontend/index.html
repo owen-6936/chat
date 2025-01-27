@@ -8,7 +8,8 @@
     <script src="scripts/index.js"></script>
   </head>
   <body>
-    <form>
+    <!-- login form -->
+    <form class="login-form d-none">
       <h2 class="form-header">LOGIN</h2>
       <input
         type="email"
@@ -24,14 +25,56 @@
         required
         placeholder="password"
       />
+      <span class="forgot-passsword link"> Forgotten Password?</span>
       <span class="login-text"
         >don't have an account? <span class="link">create account</span></span
       >
-      <span
-        ><input type="checkbox" name="checkbox" id="checkbox" /><label
-          for="checkbox"
-          >remember me</label
-        ></span
+      <div class="check">
+        <input
+          class="checkbox"
+          type="checkbox"
+          name="checkbox"
+          id="check"
+        /><label for="check">remember me</label>
+      </div>
+      <button type="submit" class="login-btn">sign in</button>
+    </form>
+    <form class="reg-form">
+      <h2 class="form-header">REGISTER</h2>
+      <input
+        class="firstName"
+        type="text"
+        name="firstName"
+        placeholder="first name"
+      />
+      <input
+        class="lastName"
+        type="text"
+        name="lastName"
+        placeholder="last name"
+      />
+      <input
+        class="username"
+        type="text"
+        name="username"
+        placeholder="choose a username..."
+      />
+      <input
+        class="email"
+        type="email"
+        name="email"
+        required
+        placeholder="Email address"
+      />
+      <input
+        class="password"
+        type="password"
+        name="password"
+        required
+        placeholder="password"
+      />
+      <span class="login-text"
+        >don't have an account? <span class="link">create account</span></span
       >
       <button type="submit" class="login-btn">sign in</button>
     </form>
