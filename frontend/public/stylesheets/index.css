@@ -1,13 +1,44 @@
+@font-face {
+  font-family: "Poppins";
+  src: url("../assets/fonts/Poppins/Poppins-Regular.ttf") format("truetype");
+}
 html,
 body {
   height: 100%;
+  margin: 0 8px;
   box-sizing: border-box;
   align-content: center;
+  font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+body,
+.login-btn {
+  background: linear-gradient(
+    90deg,
+    hsla(217, 100%, 50%, 1) 0%,
+    hsla(186, 100%, 69%, 1) 100%
+  );
+  background: -moz-linear-gradient(
+    90deg,
+    hsla(217, 100%, 50%, 1) 0%,
+    hsla(186, 100%, 69%, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    90deg,
+    hsla(217, 100%, 50%, 1) 0%,
+    hsla(186, 100%, 69%, 1) 100%
+  );
 }
 .link {
   color: #133e87;
+  text-decoration: underline;
+}
+.link:hover {
+  color: #dc143c;
+  cursor: pointer;
 }
 form {
+  background-color: #fff;
+  box-shadow: 0px 0px 10px 0px;
   border: 1px solid grey;
   border-radius: 5px;
   padding: 20px;
@@ -18,13 +49,32 @@ form {
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  .form-header {
+    margin-top: 0;
+  }
   input {
     padding: 10px;
     font-size: 16px;
+    border-radius: 5px;
+  }
+  input:focus {
+    border-bottom: 3px solid;
   }
   button {
+    width: 200px;
     padding: 10px 20px;
-    background-color: #2973b2;
+    border: 1.5px solid #2973b2;
     color: #fff;
+    font-size: medium;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+  }
+  button:hover {
+    border-left: 2.5px solid #2973b2;
+    border-top: 2.5px solid #2973b2;
+  }
+  .login-text {
+    padding: 20px;
   }
 }
