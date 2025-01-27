@@ -1,5 +1,11 @@
 const root = "C:/Users/erhab/OneDrive/chat";
 
+function mainRouter(app) {
+  app.get("/home", (req, res) => {
+    res.sendFile("frontend/home.html", { root });
+  });
+}
+
 function loginRouter(app) {
   app
     .get("/", (req, res) => {
@@ -10,4 +16,4 @@ function loginRouter(app) {
     });
 }
 
-module.exports = { loginRouter };
+module.exports = { mainRouter, loginRouter };
