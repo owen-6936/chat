@@ -5,7 +5,6 @@
 html,
 body {
   height: 100%;
-  margin: 0;
   box-sizing: border-box;
   align-content: center;
   font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -87,17 +86,27 @@ form {
     border-top: 2.5px solid #2973b2;
   }
   .login-text {
-    padding: 20px;
+    width: 100%;
+    text-align: center;
+    padding: 15px 5px;
+  }
+  .form-login-txt {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 90%;
+    text-align: right;
   }
   .check {
-    display: flex;
+    width: max-content;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
     flex-direction: row;
     padding: 2px;
     input,
     label {
-      display: inline-block;
+      display: inline;
       width: max-content;
       padding: 10px;
     }
