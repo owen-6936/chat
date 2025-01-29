@@ -52,6 +52,10 @@ nav {
   align-items: center;
   flex-flow: column wrap;
 }
+.nav-items {
+  margin: 15px;
+  cursor: pointer;
+}
 .chat-section {
   display: flex;
   height: 100%;
@@ -78,7 +82,7 @@ nav {
   color: #888;
   padding: 15px;
 }
-@media screen and (width < 800px) {
+@media screen and (width < 875px) {
   nav {
     height: 65px;
     width: 100%;

@@ -10,7 +10,8 @@ body {
   font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 body,
-.login-btn {
+.signin-btn,
+.signup-btn {
   background: linear-gradient(
     90deg,
     hsla(217, 100%, 50%, 1) 0%,

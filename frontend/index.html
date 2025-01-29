@@ -9,18 +9,20 @@
   </head>
   <body>
     <!-- sign in form -->
-    <form class="login-form">
+    <form class="login-form" action="/login" method="post">
       <h2 class="form-header">SIGN IN</h2>
       <input
         type="email"
         name="email"
         id="email"
+        class="signin-email"
         required
         placeholder="Email address"
       />
       <input
         type="password"
         name="password"
+        class="signin-pw"
         id="password"
         required
         placeholder="password"
@@ -41,7 +43,7 @@
         >
       </span>
 
-      <button type="submit" class="login-btn">sign in</button>
+      <button type="button" class="signin-btn">sign in</button>
     </form>
     <!--sign up form-->
     <form class="reg-form d-none">
@@ -85,7 +87,7 @@
         >already have an account?
         <span class="link login-acc-link">sign in</span></span
       >
-      <button type="submit" class="login-btn">sign up</button>
+      <button type="button" class="signup-btn">sign up</button>
     </form>
   </body>
 </html>
