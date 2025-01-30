@@ -4,6 +4,7 @@ const http = require("http");
 const connectLiveReload = require("connect-livereload");
 const path = require("path");
 const router = require("./routers/authRouter.cjs");
+const client = require("./auth/client.cjs");
 const app = express();
 var port = 5500;
 const server = http.createServer(app);

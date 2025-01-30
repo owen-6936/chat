@@ -1,10 +1,14 @@
 // imports
+const client = require("../auth/client.cjs");
 const { Router } = require("express");
 const bcrypt = require("bcrypt");
+const dotenv = require("dotenv");
 const root = "C:/Users/erhab/OneDrive/chat";
 const router = Router();
+dotenv.config();
 
 // constants and variables
+const db = process.env.DB;
 const saltRounds = 10;
 const isEmail = (email) => {
   return String(email)
@@ -20,12 +24,18 @@ router.get("/", (req, res) => {
 });
 
 // gets sign in data from client
-router.post("/signin", (req, res) => {
+router.post("/signin", async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   if (isEmail(email)) {
-    res.send("success");
-    console.log(req.body);
+    await client.connect();
+    const data = await client.db(db).collection("users").findOne({ email });
+    console.log(data);
+    if (data) {
+    } else {
+    }
+    await client.close();
+    res.end();
   }
 });
 
