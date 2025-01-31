@@ -3,6 +3,10 @@ const client = require("../auth/client.cjs");
 const { Router } = require("express");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
+const {
+  handleAddUser,
+  handleFindUser,
+} = require("../controllers/accController.cjs");
 const root = "C:/Users/erhab/OneDrive/chat";
 const router = Router();
 dotenv.config();
@@ -25,17 +29,12 @@ router.get("/", (req, res) => {
 
 // gets sign in data from client
 router.post("/signin", async (req, res) => {
+  const body = req.body;
   const email = req.body.email;
   const password = req.body.password;
+  const query = { body };
   if (isEmail(email)) {
-    await client.connect();
-    const data = await client.db(db).collection("users").findOne({ email });
-    console.log(data);
-    if (data) {
-    } else {
-    }
-    await client.close();
-    res.end();
+    const user = await handleFindUser(body);
   }
 });
 
@@ -46,9 +45,13 @@ router.post("/signup", (req, res) => {
   const firstName = body.firstName;
   const lastName = body.lastName;
   const username = body.username;
-  if (isEmail(email)) {
+  const values = Object.values(body).filter((val) => {
+    return val !== "";
+  });
+  if (isEmail(email) && values.length === 5) {
     res.send("success");
-    console.log(req.body, email);
+  } else {
+    res.send("unable to create your account check the fields");
   }
 });
 

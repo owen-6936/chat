@@ -39,25 +39,24 @@ const signin = () => {
 };
 
 const signup = () => {
-  let inputs = regForm.querySelectorAll("input");
-  inputs = inputs;
+  const inputs = regForm.querySelectorAll("input");
   const body = {};
-  let key;
-  let value;
-  for (let i = 0; i < inputs.length; i++) {
-    key = inputs[i].name;
-    value = inputs[i].value;
-    body[key] = value;
-    if (inputs[i].value === "") {
-      alert("please fill in all fields");
-      break;
-    } else {
-      fetch("/signup", {
-        body: JSON.stringify(body),
-        method: "POST",
-        headers: { "Content-type": "application/json" },
-      }).catch((err) => console.error("error", err));
-    }
+  const values = [];
+  inputs.forEach((input) => {
+    values.push(input.value);
+    body[input.name] = input.value;
+  });
+  const nonEmptyValues = values.filter((val) => {
+    return val !== "";
+  });
+  if (nonEmptyValues.length === 5) {
+    fetch("/signup", {
+      body: JSON.stringify(body),
+      method: "POST",
+      headers: { "Content-type": "application/json" },
+    }).catch((err) => console.error("error", err));
+  } else {
+    alert("please fill in all fields");
   }
 };
 // event listeners
@@ -72,4 +71,7 @@ regLink.addEventListener("click", () => {
   body.style.margin = "8px";
 });
 signinbtn.addEventListener("click", () => signin());
-signupbtn.addEventListener("click", () => signup());
+signupbtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  signup();
+});

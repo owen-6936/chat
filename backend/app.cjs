@@ -4,13 +4,11 @@ const http = require("http");
 const connectLiveReload = require("connect-livereload");
 const path = require("path");
 const router = require("./routers/authRouter.cjs");
-const client = require("./auth/client.cjs");
 const app = express();
 var port = 5500;
 const server = http.createServer(app);
 const liveServer = liveReload.createServer();
-liveServer.watch(path.resolve("../chat"));
-
+liveServer.watch(path.resolve("../chat/frontend"));
 app.use(connectLiveReload());
 app.use(express.static(path.resolve("./frontend/public")));
 app.use(express.json());

@@ -1,16 +1,14 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const { config } = require("dotenv");
 config();
+const username = process.env.USER_NAME;
+const password = process.env.PASSWORD;
 const uri =
-  "mongodb+srv://" +
-  process.env.USER_NAME +
+  "mongodb://" +
+  username +
   ":" +
-  process.env.PASSWORD +
-  "@" +
-  process.env.CLUSTER_NAME +
-  ".x6hia.mongodb.net/?retryWrites=true&w=majority&appName=" +
-  process.env.CLUSTER_NAME.charAt(0).toUpperCase() +
-  process.env.CLUSTER_NAME.slice(1);
+  password +
+  "@cluster0-shard-00-00.x6hia.mongodb.net:27017,cluster0-shard-00-01.x6hia.mongodb.net:27017,cluster0-shard-00-02.x6hia.mongodb.net:27017/?ssl=true&replicaSet=atlas-sw0m8q-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster0";
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -39,6 +37,5 @@ const testConnection = async (client) => {
     console.error("Failed to connect to database!", err);
   }
 };
-testConnection(client);
 
 module.exports = client;
