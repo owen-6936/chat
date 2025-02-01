@@ -8,6 +8,7 @@ body {
   box-sizing: border-box;
   align-content: center;
   font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  overflow: auto;
 }
 body,
 .signin-btn,
@@ -29,7 +30,7 @@ body,
   );
 }
 .d-none {
-  display: none;
+  display: none !important;
 }
 .link {
   color: #133e87;
@@ -112,6 +113,15 @@ form {
       padding: 10px;
     }
   }
+}
+.error-msg {
+  background-color: #f8d7da;
+  color: #dc3545;
+  padding: 10px;
+  font-size: 16px;
+  width: 90%;
+  border: 0.5px solid;
+  border-radius: 2px;
 }
 #reg-form {
   margin: 0;

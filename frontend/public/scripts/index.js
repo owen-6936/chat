@@ -17,9 +17,11 @@ const validateEmail = (email) => {
 };
 
 const signin = () => {
-  const email = document.querySelector(".signin-email").value;
-  const pw = document.querySelector(".signin-pw").value;
-  if (email !== "" && pw !== "") {
+  const emailInput = document.querySelector(".signin-email");
+  const email = emailInput.value;
+  const pwInput = document.querySelector(".signin-pw");
+  const pw = pwInput.value;
+  if (emailInput.checkValidity() && pwInput.checkValidity()) {
     if (validateEmail(email)) {
       const body = JSON.stringify({
         email,
@@ -31,20 +33,25 @@ const signin = () => {
         headers: { "Content-type": "application/json" },
       }).catch((err) => console.error("error", err));
     } else {
-      alert("invalid email address");
+      emailInput.reportValidity();
+      pwInput.reportValidity();
     }
   } else {
-    alert("please fill in all fields");
+    emailInput.checkValidity()
+      ? pwInput.reportValidity()
+      : emailInput.reportValidity();
   }
 };
 
 const signup = () => {
   const inputs = regForm.querySelectorAll("input");
+  const vals = [];
   const body = {};
   const values = [];
   inputs.forEach((input) => {
     values.push(input.value);
     body[input.name] = input.value;
+    vals.unshift(input);
   });
   const nonEmptyValues = values.filter((val) => {
     return val !== "";
@@ -56,7 +63,12 @@ const signup = () => {
       headers: { "Content-type": "application/json" },
     }).catch((err) => console.error("error", err));
   } else {
-    alert("please fill in all fields");
+    vals.map((input) => {
+      if (!input.checkValidity()) {
+        input.focus({ preventScroll: false });
+        input.reportValidity();
+      }
+    });
   }
 };
 // event listeners
@@ -70,7 +82,10 @@ regLink.addEventListener("click", () => {
   regForm.classList.add("d-none");
   body.style.margin = "8px";
 });
-signinbtn.addEventListener("click", () => signin());
+signinbtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  signin();
+});
 signupbtn.addEventListener("click", (e) => {
   e.preventDefault();
   signup();
