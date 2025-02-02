@@ -15,12 +15,21 @@ const validateEmail = (email) => {
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
 };
+function displayError(formNode, text) {
+  const error = formNode.querySelector(".error-msg");
+  error.textContent = text;
+  error.classList.remove("d-none");
+}
+function hideError(text) {
+  document.querySelector(".error-msg").classList.add("d-none");
+}
 
 const signin = () => {
   const emailInput = document.querySelector(".signin-email");
   const email = emailInput.value;
   const pwInput = document.querySelector(".signin-pw");
   const pw = pwInput.value;
+  hideError();
   if (emailInput.checkValidity() && pwInput.checkValidity()) {
     if (validateEmail(email)) {
       const body = JSON.stringify({
@@ -31,8 +40,17 @@ const signin = () => {
         body,
         method: "POST",
         headers: { "Content-type": "application/json" },
-      }).then((res) => {
-        window.location.href = res.url;
+        redirect: "follow",
+      }).then(async (res) => {
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          res = await res.json();
+          if (res.error) {
+            displayError(loginForm, res.message);
+          } else {
+            location.href = "/home";
+          }
+        }
       });
     } else {
       emailInput.reportValidity();
@@ -63,7 +81,19 @@ const signup = () => {
       body: JSON.stringify(body),
       method: "POST",
       headers: { "Content-type": "application/json" },
-    }).catch((err) => console.error("error", err));
+    })
+      .then(async (res) => {
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          res = await res.json();
+          if (res.error) {
+            displayError(regForm, res.message);
+          } else {
+            location.href = "/";
+          }
+        }
+      })
+      .catch((err) => console.error("error", err));
   } else {
     vals.map((input) => {
       if (!input.checkValidity()) {

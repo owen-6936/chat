@@ -50,13 +50,22 @@ router.post("/signin", async (req, res) => {
         if (val) {
           req.session.uid = user._id;
           req.session.isAuth = true;
-          res.redirect(301, "/home");
+          res.json({
+            message: "login successful",
+            error: false,
+          });
         } else {
-          res.send("incorrect username or password");
+          res.json({
+            message: "incorrect username or password",
+            error: true,
+          });
         }
       });
     } else {
-      res.send("you don't currently have an account with this email address");
+      res.json({
+        message: "You don't currently have an account with this email address",
+        error: true,
+      });
     }
   }
 });
@@ -71,17 +80,26 @@ router.post("/signup", async (req, res) => {
   });
   if (isEmail(email) && values.length === 5) {
     const user = await handleFindUser({ email });
-    if (user) {
+    if (!user) {
       bcrypt.hash(plainTextPassword, saltRounds).then(async (password) => {
         body.password = password;
         await handleAddUser(body);
-        res.redirect(301, "/");
+        res.json({
+          message: "login successful",
+          error: false,
+        });
       });
     } else {
-      res.send("unable to create your account please check the fields");
+      res.json({
+        message: "This email address is already associated with an account",
+        error: true,
+      });
     }
   } else {
-    res.send("This email address is already associated with an account");
+    res.json({
+      message: "check all fields are filled in correctly",
+      error: true,
+    });
   }
 });
 
