@@ -11,7 +11,7 @@ async function handleAddUser(userObj) {
     .collection("users")
     .insertOne(userObj)
     .then(() => {
-      console.log("your account has been successfully created! /n");
+      console.log("your account has been successfully created!");
     })
     .catch((err) => {
       console.error("could not create your account", err);

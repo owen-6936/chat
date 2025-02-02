@@ -31,7 +31,9 @@ const signin = () => {
         body,
         method: "POST",
         headers: { "Content-type": "application/json" },
-      }).catch((err) => console.error("error", err));
+      }).then((res) => {
+        window.location.href = res.url;
+      });
     } else {
       emailInput.reportValidity();
       pwInput.reportValidity();

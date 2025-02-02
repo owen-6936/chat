@@ -1,5 +1,4 @@
 // imports
-const client = require("../auth/client.cjs");
 const { Router } = require("express");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
@@ -23,35 +22,66 @@ const isEmail = (email) => {
 };
 
 // loads the sign in page
-router.get("/", (req, res) => {
-  res.sendFile("./frontend/index.html", { root });
+router.get("/", (req, res, next) => {
+  if (req.session.isAuth) {
+    res.redirect(301, "/home");
+  } else {
+    res.sendFile("./frontend/index.html", { root });
+  }
+});
+
+// destroys current client session
+router.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    res.clearCookie("connect.sid");
+    res.redirect(301, "/");
+  });
 });
 
 // gets sign in data from client
 router.post("/signin", async (req, res) => {
-  const body = req.body;
-  const email = req.body.email;
-  const password = req.body.password;
-  const query = { body };
+  const body = Object.assign({}, req.body);
+  const email = body.email;
+  const password = body.password;
   if (isEmail(email)) {
-    const user = await handleFindUser(body);
+    const user = await handleFindUser({ email });
+    if (user) {
+      bcrypt.compare(password, user.password).then((val) => {
+        if (val) {
+          req.session.uid = user._id;
+          req.session.isAuth = true;
+          res.redirect(301, "/home");
+        } else {
+          res.send("incorrect username or password");
+        }
+      });
+    } else {
+      res.send("you don't currently have an account with this email address");
+    }
   }
 });
 
-router.post("/signup", (req, res) => {
-  const body = req.body;
+// gets data from client and creates an account
+router.post("/signup", async (req, res) => {
+  const body = Object.assign({}, req.body);
   const email = body.email;
-  const password = body.password;
-  const firstName = body.firstName;
-  const lastName = body.lastName;
-  const username = body.username;
+  const plainTextPassword = body.password;
   const values = Object.values(body).filter((val) => {
     return val !== "";
   });
   if (isEmail(email) && values.length === 5) {
-    res.send("success");
+    const user = await handleFindUser({ email });
+    if (user) {
+      bcrypt.hash(plainTextPassword, saltRounds).then(async (password) => {
+        body.password = password;
+        await handleAddUser(body);
+        res.redirect(301, "/");
+      });
+    } else {
+      res.send("unable to create your account please check the fields");
+    }
   } else {
-    res.send("unable to create your account check the fields");
+    res.send("This email address is already associated with an account");
   }
 });
 
