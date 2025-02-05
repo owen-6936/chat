@@ -26,12 +26,12 @@ dotenv.config();
 // creating the server
 const server = http.createServer(app);
 
-// reloading my browser if theres file changes
-// const liveServer = liveReload.createServer();
-// liveServer.watch(path.resolve("../chat/frontend"));
+//reloading my browser if theres file changes
+const liveServer = liveReload.createServer();
+liveServer.watch(path.resolve("../chat/frontend"));
 
 // adding middlewares to my server
-// app.use(connectLiveReload());
+app.use(connectLiveReload());
 app.use(express.static(path.resolve("./frontend/public")));
 app.use(express.json());
 app.use(

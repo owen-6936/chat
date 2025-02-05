@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="./assets/chatty.ico" type="image/x-icon" />
     <title>Chat homepage</title>
     <link rel="stylesheet" href="stylesheets/style.css" />
     <script defer src="scripts/script.js"></script>
@@ -17,25 +18,28 @@
       <section class="main-section">
         <section class="chat-section">
           <section class="chats">
+            <div class="chat"></div>
             <p class="temp-chats-txt">no data found...</p>
           </section>
           <section class="conversation">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#888"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="feather feather-send"
-            >
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-            <p class="temp-convo-txt">select a conversation ...</p>
+            <p class="temp-convo-txt">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="25"
+                viewBox="0 0 25 17"
+                fill="none"
+                stroke="#888"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-send"
+              >
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+              select a conversation ...
+            </p>
           </section>
         </section>
         <nav>
