@@ -15,7 +15,10 @@ html {
   font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 .d-none {
-  display: none;
+  display: none !important;
+}
+.d-flex {
+  display: flex !important;
 }
 .main-container {
   height: 100%;
@@ -57,7 +60,7 @@ header {
 nav {
   background-color: #fff;
   height: 100%;
-  width: 85px;
+  width: max-content;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -73,12 +76,42 @@ nav {
   width: 100%;
 }
 .conversation {
+  position: relative;
   background-image: url("../assets/images/chats-background-light.jpg");
   background-size: contain;
   width: 65%;
   display: flex;
   justify-content: center;
   align-items: center;
+  .convo-header {
+    background-color: #fff;
+    color: #000;
+    position: absolute;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    left: 0;
+    right: 0;
+    top: 0;
+    img,
+    h4 {
+      margin-left: 20px;
+    }
+    .arrow-back {
+      margin-left: 5px;
+      cursor: pointer;
+    }
+    h4 {
+      font-style: oblique;
+    }
+    img {
+      width: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  }
 }
 .temp-chats-txt,
 .temp-convo-txt {
@@ -101,19 +134,22 @@ nav {
     margin: 5px;
     padding: 5px;
     border-radius: 5px;
+    min-width: 320px;
     .card-details {
       display: flex;
       flex-flow: column wrap;
       justify-content: space-between;
       cursor: pointer;
+      flex-grow: 1;
+      padding-inline-start: 20px;
       .card-title {
         font-weight: 700;
         font-size: 16px;
         padding-bottom: 5px;
       }
       .card-text {
-        width: fit-content;
-        max-width: 32ch;
+        width: 100%;
+        max-width: 25ch;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -140,10 +176,14 @@ nav {
   .main-section {
     flex-direction: column;
   }
+  .chat-section {
+    width: 100%;
+  }
   .chats {
     width: 100%;
   }
   .conversation {
     display: none;
+    width: 100%;
   }
 }
