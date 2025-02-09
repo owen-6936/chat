@@ -20,6 +20,9 @@ html {
 .d-flex {
   display: flex !important;
 }
+.v-none {
+  visibility: hidden;
+}
 .main-container {
   height: 100%;
   width: 100%;
@@ -112,6 +115,60 @@ nav {
       cursor: pointer;
     }
   }
+  .cht-comp-cont {
+    align-self: flex-end;
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-around;
+    .basic-cht-comp {
+      width: 100%;
+      display: flex;
+      flex-flow: row wrap;
+      align-items: center;
+      justify-content: space-around;
+    }
+    textarea {
+      resize: none;
+      min-width: 80%;
+      border-radius: 15px;
+      padding: 10px;
+      font-size: 16px;
+      font-family: inherit;
+      line-height: 1;
+      flex-grow: 0.9;
+      min-height: 35px;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      overflow: auto;
+    }
+    .hide-hidden-div {
+      height: 0;
+      width: 0;
+      overflow: hidden;
+    }
+    .hidden-div {
+      padding: 10px;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      min-width: 80%;
+      font-size: 16px;
+      line-height: 1;
+      height: auto;
+      overflow: hidden;
+      z-index: 999;
+    }
+    button {
+      background-color: #189ab4;
+      color: #fff;
+      border: #189ab4;
+      border-radius: 10px;
+      padding: 5px 15px;
+      cursor: pointer;
+      height: 35px;
+    }
+  }
 }
 .temp-chats-txt,
 .temp-convo-txt {
@@ -166,6 +223,37 @@ nav {
       cursor: default;
       font-size: 12px;
     }
+  }
+}
+.other,
+.you {
+  display: inline-block;
+  font-size: 15px;
+  width: 100%;
+  height: max-content;
+  padding: 5px;
+  p {
+    font-family: "Poppins-bold";
+    border-radius: 15px;
+    padding: 10px;
+    margin: auto;
+    max-width: 80%;
+  }
+}
+.other {
+  p {
+    background-color: dimgrey;
+    color: #fff;
+    float: left;
+    border-top-left-radius: 1px;
+  }
+}
+.you {
+  p {
+    background-color: darkcyan;
+    float: right;
+    color: whitesmoke;
+    border-top-right-radius: 1px;
   }
 }
 @media screen and (width < 875px) {

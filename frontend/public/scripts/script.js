@@ -43,6 +43,10 @@ document
   .querySelector(".arrow-back")
   .addEventListener("click", () => closeConvo());
 
+document.querySelector(".message-bar").addEventListener("input", () => {
+  handleLineBreak();
+});
+
 // functions ...
 function createCard({
   username = "unknown",
@@ -85,26 +89,92 @@ function openConvo(
   convoContainer.querySelector(".temp-convo-txt").classList.add("d-none");
   const convoHeader = convoContainer.children[0];
   convoHeader.classList.remove("d-none");
-  convoHeader.children[1].src = imageSrc;
-  convoHeader.children[2].textContent = username;
+  convoHeader.children[2].src = imageSrc;
+  convoHeader.children[3].textContent = username;
   if (window.innerWidth < 875) {
     document.querySelector(".chats").classList.add("d-none");
     document.querySelector(".conversation").classList.add("d-flex");
   } else {
     document.querySelector(".arrow-back").classList.add("d-none");
   }
+  document.querySelector(".cht-comp-cont").classList.remove("d-none");
 }
 
 function closeConvo() {
   console.log("closing convo");
   document.querySelector(".chats").classList.remove("d-none");
   document.querySelector(".conversation").classList.replace("d-flex", "d-none");
+  document.querySelector(".cht-comp-cont").classList.add("d-none");
 }
 
 createCard({
   username: "Jace",
   textDetails: "helo Owen how are you doing? where are you",
 });
+
+function handleLineBreak() {
+  const hiddenDiv = document.querySelector(".hidden-div");
+  const txtComp = document.querySelector(".text-composer");
+  hiddenDiv.textContent = txtComp.value;
+  hiddenDiv.style.width = txtComp.clientWidth + "px";
+  const ht = txtComp.computedStyleMap().get("min-height")["value"];
+  const lht = txtComp.computedStyleMap().get("line-height")["value"];
+  const height = parseInt(ht) + parseInt(lht);
+  const sht = hiddenDiv.clientHeight;
+  const numberOfLineBreaks = sht !== height ? (sht - height) / 16 : 0;
+  const setRows = numberOfLineBreaks + 1;
+  const rows = parseInt(txtComp.getAttribute("rows"));
+  if (numberOfLineBreaks > 0 && numberOfLineBreaks < 5 && setRows !== rows) {
+    txtComp.setAttribute("rows", setRows.toString());
+  }
+}
+
+//function loadDistinctChats(chats) {
+//   const chtCont = document.querySelector(".cht-cont");
+//   const chatWrapper = document.createElement("div");
+//   chatWrapper.classList.add(...["chat-wrapper"]);
+//   chtCont.innerHTML = null;
+//   const loadedChats = [];
+//   btn.addEventListener("click", () => {
+//     const url = "http://" + window.location.hostname + ":5500" + "/chat";
+
+//     let body = {
+//       message: input.value,
+//       uid: sessionStorage.getItem("uid"),
+//       sender: false,
+//     };
+//     fetch(url, {
+//       body: JSON.stringify(body),
+//       method: "POST",
+//       headers: { "Content-type": "application/json" },
+//     }).then(async (value) => {
+//       value = await value.json();
+//       console.log(value);
+//     });
+//   });
+//   chats.forEach((chat) => {
+//     const sender = chat.sender;
+//     const message = chat.text;
+//     if (sender === true) {
+//       const yourCard = document.createElement("div");
+//       const yourCardP = document.createElement("p");
+//       yourCard.className = "you";
+//       yourCardP.textContent = message;
+//       yourCard.appendChild(yourCardP);
+//       loadedChats.push(yourCard);
+//     } else {
+//       const otherCard = document.createElement("div");
+//       const otherCardP = document.createElement("p");
+//       otherCard.appendChild(otherCardP);
+//       otherCard.className = "other";
+//       otherCardP.textContent = message;
+//       loadedChats.push(otherCard);
+//     }
+//   });
+//   chatWrapper.append(...loadedChats);
+//   chtCont.prepend(chatWrapper);
+// }
+
 createCard({ username: "Jace" });
 createCard({ username: "Owen" });
 createCard({ username: "Clinton" });
