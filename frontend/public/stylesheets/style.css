@@ -13,6 +13,7 @@ html {
   margin: 0;
   height: 100%;
   font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  scroll-padding-bottom: 20px;
 }
 .d-none {
   display: none !important;
@@ -122,6 +123,7 @@ nav {
     flex-flow: row wrap;
     align-items: center;
     justify-content: space-around;
+    padding: 10px;
     .basic-cht-comp {
       width: 100%;
       display: flex;
@@ -273,5 +275,10 @@ nav {
   .conversation {
     display: none;
     width: 100%;
+  }
+}
+@media screen and (width < 1020px) and (width > 875px) {
+  .chats {
+    width: 45%;
   }
 }

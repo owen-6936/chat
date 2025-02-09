@@ -47,6 +47,12 @@ document.querySelector(".message-bar").addEventListener("input", () => {
   handleLineBreak();
 });
 
+document.querySelector(".message-bar").addEventListener("focus", () => {
+  document
+    .querySelector(".cht-comp-cont")
+    .scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
 // functions ...
 function createCard({
   username = "unknown",
@@ -92,9 +98,11 @@ function openConvo(
   convoHeader.children[2].src = imageSrc;
   convoHeader.children[3].textContent = username;
   if (window.innerWidth < 875) {
+    document.querySelector(".navbar").classList.add("d-none");
     document.querySelector(".chats").classList.add("d-none");
     document.querySelector(".conversation").classList.add("d-flex");
   } else {
+    document.querySelector(".navbar").classList.remove("d-none");
     document.querySelector(".arrow-back").classList.add("d-none");
   }
   document.querySelector(".cht-comp-cont").classList.remove("d-none");
@@ -105,6 +113,7 @@ function closeConvo() {
   document.querySelector(".chats").classList.remove("d-none");
   document.querySelector(".conversation").classList.replace("d-flex", "d-none");
   document.querySelector(".cht-comp-cont").classList.add("d-none");
+  document.querySelector(".navbar").classList.remove("d-none");
 }
 
 createCard({
@@ -114,17 +123,18 @@ createCard({
 
 function handleLineBreak() {
   const hiddenDiv = document.querySelector(".hidden-div");
-  const txtComp = document.querySelector(".text-composer");
+  const txtComp = document.querySelector(".message-bar");
   hiddenDiv.textContent = txtComp.value;
   hiddenDiv.style.width = txtComp.clientWidth + "px";
   const ht = txtComp.computedStyleMap().get("min-height")["value"];
   const lht = txtComp.computedStyleMap().get("line-height")["value"];
   const height = parseInt(ht) + parseInt(lht);
   const sht = hiddenDiv.clientHeight;
-  const numberOfLineBreaks = sht !== height ? (sht - height) / 16 : 0;
-  const setRows = numberOfLineBreaks + 1;
+  const numberOfLineBreaks = sht !== height ? (sht - height) / 16 + 1 : 1;
+  const setRows = numberOfLineBreaks;
   const rows = parseInt(txtComp.getAttribute("rows"));
   if (numberOfLineBreaks > 0 && numberOfLineBreaks < 5 && setRows !== rows) {
+    console.log("set", setRows);
     txtComp.setAttribute("rows", setRows.toString());
   }
 }
