@@ -52,6 +52,7 @@ router.post("/signin", async (req, res) => {
           req.session.isAuth = true;
           res.json({
             message: "login successful",
+            username: user.username,
             error: false,
           });
         } else {

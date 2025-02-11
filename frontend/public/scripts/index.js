@@ -36,6 +36,8 @@ const signin = () => {
         email,
         password: pw,
       });
+      emailInput.value = "";
+      pwInput.value = "";
       fetch("/signin", {
         body,
         method: "POST",
@@ -48,6 +50,7 @@ const signin = () => {
           if (res.error) {
             displayError(loginForm, res.message);
           } else {
+            sessionStorage.setItem("username", res.username);
             location.href = "/home";
           }
         }

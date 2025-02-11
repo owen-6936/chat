@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="./assets/chatty.ico" type="image/x-icon" />
     <title>Chat homepage</title>
     <link rel="stylesheet" href="stylesheets/style.css" />
+    <script defer src="/socket.io.js"></script>
     <script defer src="scripts/script.js"></script>
     <script defer src="scripts/util.js"></script>
   </head>
@@ -18,7 +19,7 @@
       <section class="main-section">
         <section class="chat-section">
           <section class="chats">
-            <p class="temp-chats-txt">no data found...</p>
+            <p class="temp-chats-txt">no users found...</p>
           </section>
           <section class="conversation">
             <div class="convo-header d-none">
@@ -43,6 +44,7 @@
               <img src="" alt="" />
               <h4>Owen</h4>
             </div>
+
             <p class="temp-convo-txt">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -61,6 +63,7 @@
               </svg>
               select a conversation ...
             </p>
+            <div class="load-chats"></div>
             <div class="cht-comp-cont d-none">
               <div class="basic-cht-comp">
                 <textarea
@@ -72,7 +75,7 @@
                 <div aria-hidden="true" class="v-none hide-hidden-div">
                   <div aria-hidden="true" class="v-none hidden-div"></div>
                 </div>
-                <button type="button">send</button>
+                <button class="sendbtn" type="button">send</button>
               </div>
             </div>
           </section>
