@@ -4,8 +4,9 @@ window.onload = () => {
   const chatContainer = document.querySelector(".chats");
   let chatCounter = 0;
   let chatCount = 5;
-  const username = sessionStorage.getItem("username");
+  const _username = sessionStorage.getItem("username");
   var onlineUsers = [];
+  var selectedUser = {};
   // creating custom events
   const load_cards = new Event("cardLoaded");
   const onlineUsersUpdated = new Event("onlineUsersUpdated");
@@ -29,9 +30,13 @@ window.onload = () => {
   });
 
   window.addEventListener("onlineUsersUpdated", () => {
+    chatContainer.querySelectorAll(".card").forEach((card) => {
+      card.remove();
+    });
     onlineUsers.map((user) => {
       createCard({ username: user.username });
     });
+    chatContainer.dispatchEvent(load_cards);
   });
 
   document.querySelector(".logout-btn").addEventListener("click", (e) => {
@@ -42,11 +47,14 @@ window.onload = () => {
   });
 
   chatContainer.addEventListener("cardLoaded", () => {
-    console.log("chats loaded");
     chatContainer.querySelectorAll(".card").forEach((card) => {
       card.addEventListener("click", (evt) => {
         const username = evt.currentTarget.children[1].children[0].textContent;
         openConvo(username);
+        onlineUsers.map((user) => {
+          user.username === username ? (selectedUser = user) : false;
+        });
+        selectedUser.from = _username;
       });
     });
   });
@@ -63,6 +71,8 @@ window.onload = () => {
     const text = document.querySelector(".message-bar").value;
     document.querySelector(".message-bar").value = "";
     handleMyMesssage(text);
+    selectedUser.message = text;
+    socket.emit("private message", selectedUser);
   });
 
   // functions ...
@@ -169,17 +179,29 @@ window.onload = () => {
     document.querySelector(".load-chats").appendChild(theirCard);
   }
 
-  socket.auth = { username };
+  socket.auth = { username: _username };
   socket.connect();
-  socket.on("user connected", (user) => {
-    user.username !== username ? onlineUsers.push(user) : false;
-    dispatchEvent(onlineUsersUpdated);
+  socket.on("error", (err) => {
+    throw new Error(err);
   });
   socket.on("users", (users) => {
     let newUsers = users.filter((user) => {
-      return user.username !== username;
+      return user.username !== _username;
     });
-    onlineUsers.push(...newUsers);
+    onlineUsers = newUsers;
+    console.log(onlineUsers);
     dispatchEvent(onlineUsersUpdated);
+  });
+  socket.on("user disconnected", (socket) => {
+    console.log(`${socket.username} went offline!`);
+    let currentUsers = onlineUsers.filter((user) => {
+      return socket.username !== user.username;
+    });
+    onlineUsers = currentUsers;
+    console.log("remaining users:", onlineUsers);
+    dispatchEvent(onlineUsersUpdated);
+  });
+  socket.on("new message", (selectedUser) => {
+    handleTheirMesssage(selectedUser.message);
   });
 };

@@ -253,6 +253,7 @@ nav {
     padding: 10px;
     margin: auto;
     max-width: 80%;
+    line-break: anywhere;
   }
 }
 .other {

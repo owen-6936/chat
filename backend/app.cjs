@@ -45,10 +45,19 @@ io.on("connection", (socket) => {
       username: socket.username,
     });
   });
-  socket.emit("users", users);
+  io.emit("users", users);
   socket.broadcast.emit("user connected", {
     sid: socket.id,
     username: socket.username,
+  });
+  socket.on("disconnect", () => {
+    socket.broadcast.emit("user disconnected", {
+      sid: socket.id,
+      username: socket.username,
+    });
+  });
+  socket.on("private message", (selectedUser) => {
+    socket.to(selectedUser.sid).emit("new message", selectedUser);
   });
 });
 
