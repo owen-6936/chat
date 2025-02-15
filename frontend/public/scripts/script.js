@@ -4,7 +4,9 @@ window.onload = () => {
   const chatContainer = document.querySelector(".chats");
   let chatCounter = 0;
   let chatCount = 5;
-  const _username = sessionStorage.getItem("username");
+  const _username = sessionStorage.getItem("username")
+    ? sessionStorage.getItem("username")
+    : localStorage.getItem("username");
   var onlineUsers = [];
   var selectedUser = {};
   // creating custom events
@@ -42,6 +44,7 @@ window.onload = () => {
   document.querySelector(".logout-btn").addEventListener("click", (e) => {
     fetch("/logout", { method: "POST", redirect: "follow" }).then(() => {
       sessionStorage.clear();
+      localStorage.clear();
       location.href = "/";
     });
   });

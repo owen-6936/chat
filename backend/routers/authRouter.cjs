@@ -23,10 +23,21 @@ const isEmail = (email) => {
 
 // loads the sign in page
 router.get("/", (req, res, next) => {
+  res.sendFile("./frontend/index.html", { root });
+});
+
+router.post("/isAuth", (req, res) => {
   if (req.session.isAuth) {
-    res.redirect(301, "/home");
+    res.json({
+      message: "login successful",
+      username: req.session.username,
+      error: false,
+    });
   } else {
-    res.sendFile("./frontend/index.html", { root });
+    res.json({
+      message: "you are not authenticated",
+      error: true,
+    });
   }
 });
 
@@ -50,6 +61,7 @@ router.post("/signin", async (req, res) => {
         if (val) {
           req.session.uid = user._id;
           req.session.isAuth = true;
+          req.session.username = user.username;
           res.json({
             message: "login successful",
             username: user.username,
