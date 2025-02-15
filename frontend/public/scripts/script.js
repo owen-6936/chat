@@ -54,7 +54,6 @@ window.onload = () => {
         onlineUsers.map((user) => {
           user.username === username ? (selectedUser = user) : false;
         });
-        selectedUser.from = _username;
       });
     });
   });
@@ -68,10 +67,12 @@ window.onload = () => {
   });
 
   document.querySelector(".sendbtn").addEventListener("click", () => {
-    const text = document.querySelector(".message-bar").value;
+    const messageBar = document.querySelector(".message-bar");
+    const text = messageBar.value;
     document.querySelector(".message-bar").value = "";
-    handleMyMesssage(text);
     selectedUser.message = text;
+    messageBar.setAttribute("rows", "1");
+    selectedUser.from = { _username, sid: socket.auth.sid };
     socket.emit("private message", selectedUser);
   });
 
@@ -165,7 +166,8 @@ window.onload = () => {
     const yourCard = document.createElement("div");
     const yourCardP = document.createElement("p");
     yourCard.className = "you";
-    yourCardP.textContent = text;
+    const formatText = text.replace(/\n/g, "<br>");
+    yourCardP.innerHTML = formatText;
     yourCard.appendChild(yourCardP);
     document.querySelector(".load-chats").appendChild(yourCard);
   }
@@ -179,17 +181,31 @@ window.onload = () => {
     document.querySelector(".load-chats").appendChild(theirCard);
   }
 
-  socket.auth = { username: _username };
+  function messageFromYou(you, sender) {
+    if (you.sid === sender.sid) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  socket.auth = { username: _username, sid: "" };
   socket.connect();
   socket.on("error", (err) => {
     throw new Error(err);
   });
   socket.on("users", (users) => {
-    let newUsers = users.filter((user) => {
+    let newUsers = [];
+    users.map((user) => {
+      user.username === _username ? (socket.auth.sid = user.sid) : "nevermind";
+      newUsers.some((usr) => usr.sid == user.sid)
+        ? "already added"
+        : newUsers.push(user);
+    });
+    newUsers = newUsers.filter((user) => {
       return user.username !== _username;
     });
     onlineUsers = newUsers;
-    console.log(onlineUsers);
     dispatchEvent(onlineUsersUpdated);
   });
   socket.on("user disconnected", (socket) => {
@@ -202,6 +218,8 @@ window.onload = () => {
     dispatchEvent(onlineUsersUpdated);
   });
   socket.on("new message", (selectedUser) => {
-    handleTheirMesssage(selectedUser.message);
+    messageFromYou(socket.auth, selectedUser.from)
+      ? handleMyMesssage(selectedUser.message)
+      : handleTheirMesssage(selectedUser.message);
   });
 };

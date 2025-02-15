@@ -15,6 +15,11 @@ const client = new MongoClient(uri, {
     strict: true,
     deprecationErrors: true,
   },
+  connectTimeoutMS: 60000, // 60 seconds
+  socketTimeoutMS: 60000, // 60 seconds
+  minPoolSize: 5,
+  maxPoolSize: 50,
+  maxIdleTimeMS: 30000, // 30 seconds
 });
 
 const listDatabases = async (client) => {
@@ -32,10 +37,38 @@ const testConnection = async (client) => {
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
     listDatabases(client);
-    await client.close();
   } catch (err) {
     console.error("Failed to connect to database!", err);
   }
 };
+listDatabases(client);
+
+// Function to close the MongoClient
+const closeClient = async () => {
+  console.log("Closing your MongodbClient connection...");
+  try {
+    if (!!client || !!client.topology || client.topology.isConnected()) {
+      await client.close();
+      console.log("MongoClient closed");
+    } else {
+      console.log("MongoClient was not connected");
+    }
+  } catch (err) {
+    console.error("Error closing MongoClient:", err);
+  }
+};
+
+// Close the client when your application is shutting down
+process.on("SIGINT", async () => {
+  console.log("SIGINT received");
+  await closeClient();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  console.log("SIGTERM received");
+  await closeClient();
+  process.exit(0);
+});
 
 module.exports = client;

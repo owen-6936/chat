@@ -9,7 +9,11 @@ const mongoDBStore = require("connect-mongodb-session")(session);
 const router = require("./routers/authRouter.cjs");
 const mainRouter = require("./routers/mainRouter.cjs");
 const dotenv = require("dotenv");
-
+const {
+  handleFindSocket,
+  handleAddSocket,
+} = require("./controllers/accController.cjs");
+const { uid } = require("uid/single");
 // defining variables
 const app = express();
 var port = 5500;
@@ -28,22 +32,31 @@ dotenv.config();
 const server = http.createServer(app);
 const io = new socketio.Server(server);
 
-io.use((socket, next) => {
+io.use(async (socket, next) => {
   const username = socket.handshake.auth.username;
   if (!username) {
     next(new Error("invalid username"));
   }
   socket.username = username;
+  const sock = await handleFindSocket({ username });
+  if (sock) {
+    socket.sid = sock.sid;
+  } else {
+    const randomId = uid(16);
+    await handleAddSocket({ username, sid: randomId });
+  }
   next();
 });
 
 io.on("connection", (socket) => {
   const users = [];
+  socket.join(socket.sid);
   io.of("/").sockets.forEach((socket) => {
-    users.push({
-      sid: socket.id,
+    const user = {
+      sid: socket.sid,
       username: socket.username,
-    });
+    };
+    users.push(user);
   });
   io.emit("users", users);
   socket.broadcast.emit("user connected", {
@@ -57,7 +70,7 @@ io.on("connection", (socket) => {
     });
   });
   socket.on("private message", (selectedUser) => {
-    socket.to(selectedUser.sid).emit("new message", selectedUser);
+    io.to(selectedUser.sid).to(socket.sid).emit("new message", selectedUser);
   });
 });
 
