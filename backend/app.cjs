@@ -9,11 +9,7 @@ const mongoDBStore = require("connect-mongodb-session")(session);
 const router = require("./routers/authRouter.cjs");
 const mainRouter = require("./routers/mainRouter.cjs");
 const dotenv = require("dotenv");
-const {
-  handleFindSocket,
-  handleAddSocket,
-} = require("./controllers/accController.cjs");
-const { uid } = require("uid/single");
+const { handleFindSocket } = require("./controllers/accController.cjs");
 // defining variables
 const app = express();
 var port = 5500;
@@ -41,9 +37,9 @@ io.use(async (socket, next) => {
   const sock = await handleFindSocket({ username });
   if (sock) {
     socket.sid = sock.sid;
+    socket.uid = sock.uid;
   } else {
-    const randomId = uid(16);
-    await handleAddSocket({ username, sid: randomId });
+    console.error("your socket object could not be found!");
   }
   next();
 });
@@ -53,6 +49,7 @@ io.on("connection", (socket) => {
   socket.join(socket.sid);
   io.of("/").sockets.forEach((socket) => {
     const user = {
+      uid: socket.uid,
       sid: socket.sid,
       username: socket.username,
     };
@@ -70,7 +67,40 @@ io.on("connection", (socket) => {
     });
   });
   socket.on("private message", (selectedUser) => {
+    selectedUser.from.uid = socket.uid;
     io.to(selectedUser.sid).to(socket.sid).emit("new message", selectedUser);
+  });
+  socket.on("new message", (obj) => {
+    if (socket.uid === obj.from.uid) {
+      var newMessageObj = Object.assign(
+        {
+          username: obj.from._username,
+          uid: obj.from.uid,
+          otherUid: obj.uid,
+          message: {
+            mid: obj.mid,
+            sender: true,
+            message: obj.message,
+          },
+        },
+        {}
+      );
+    } else {
+      newMessageObj = Object.assign(
+        {
+          username: obj.to,
+          uid: obj.uid,
+          otherUid: obj.from.uid,
+          message: {
+            mid: obj.mid,
+            sender: false,
+            message: obj.message,
+          },
+        },
+        {}
+      );
+    }
+    console.log(newMessageObj, socket.username);
   });
 });
 
@@ -82,6 +112,7 @@ liveServer.watch(path.resolve("../chat/frontend"));
 app.use(connectLiveReload());
 app.use(express.static(path.resolve("./frontend/public")));
 app.use(express.static(path.resolve("./")));
+app.use(express.static(path.resolve("./node_modules")));
 app.use(express.static(path.resolve("./node_modules/socket.io/client-dist")));
 app.use(express.json());
 app.use(

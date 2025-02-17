@@ -186,10 +186,16 @@ nav {
 .load-chats {
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  margin-bottom: auto;
+}
+.load-chats-cont {
+  width: 100%;
+  height: 100%;
   overflow: auto;
   margin-bottom: auto;
 }
-.load-chats::-webkit-scrollbar {
+.load-chats-cont::-webkit-scrollbar {
   display: none;
 }
 .chats {

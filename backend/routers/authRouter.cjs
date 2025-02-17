@@ -5,13 +5,14 @@ const dotenv = require("dotenv");
 const {
   handleAddUser,
   handleFindUser,
+  handleAddSocket,
 } = require("../controllers/accController.cjs");
+const { initializeMessages } = require("../controllers/messageController.cjs");
+const { uid } = require("uid");
 const root = "C:/Users/erhab/OneDrive/chat";
 const router = Router();
 dotenv.config();
-
 // constants and variables
-const db = process.env.DB;
 const saltRounds = 10;
 const isEmail = (email) => {
   return String(email)
@@ -59,7 +60,7 @@ router.post("/signin", async (req, res) => {
     if (user) {
       bcrypt.compare(password, user.password).then((val) => {
         if (val) {
-          req.session.uid = user._id;
+          req.session.uid = user.uid;
           req.session.isAuth = true;
           req.session.username = user.username;
           res.json({
@@ -95,8 +96,18 @@ router.post("/signup", async (req, res) => {
     const user = await handleFindUser({ email });
     if (!user) {
       bcrypt.hash(plainTextPassword, saltRounds).then(async (password) => {
+        const _uid = uid(16);
+        body.uid = _uid;
+        body.reg_date = Date();
         body.password = password;
         await handleAddUser(body);
+        await initializeMessages({ username: body.username, uid: body.uid });
+        const randomId = uid(16);
+        await handleAddSocket({
+          username: body.username,
+          sid: randomId,
+          uid: body.uid,
+        });
         res.json({
           message: "login successful",
           error: false,
@@ -115,5 +126,4 @@ router.post("/signup", async (req, res) => {
     });
   }
 });
-
 module.exports = router;

@@ -7,7 +7,7 @@
     <title>Chat homepage</title>
     <link rel="stylesheet" href="stylesheets/style.css" />
     <script defer src="/socket.io.js"></script>
-    <script defer src="scripts/script.js"></script>
+    <script defer src="scripts/script.js" type="module"></script>
     <script defer src="scripts/util.js"></script>
   </head>
   <body>
@@ -63,7 +63,7 @@
               </svg>
               select a conversation ...
             </p>
-            <div class="load-chats"></div>
+            <div class="load-chats"><div class="load-chats-cont"></div></div>
             <div class="cht-comp-cont d-none">
               <div class="basic-cht-comp">
                 <textarea

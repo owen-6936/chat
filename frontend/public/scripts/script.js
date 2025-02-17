@@ -1,4 +1,7 @@
 "use strict";
+
+import { uid } from "/uid/single/index.mjs";
+
 window.onload = () => {
   const socket = io("/", { autoConnect: false });
   const chatContainer = document.querySelector(".chats");
@@ -55,7 +58,12 @@ window.onload = () => {
         const username = evt.currentTarget.children[1].children[0].textContent;
         openConvo(username);
         onlineUsers.map((user) => {
-          user.username === username ? (selectedUser = user) : false;
+          user.username === username
+            ? (selectedUser = Object.assign(
+                { to: user.username, uid: user.uid, sid: user.sid },
+                {}
+              ))
+            : false;
         });
       });
     });
@@ -72,11 +80,17 @@ window.onload = () => {
   document.querySelector(".sendbtn").addEventListener("click", () => {
     const messageBar = document.querySelector(".message-bar");
     const text = messageBar.value;
+    if (text.match(/[^\s\r\n\t]/)) {
+      const mid = uid(16);
+      document.querySelector(".message-bar").value = "";
+      selectedUser.message = text;
+      messageBar.setAttribute("rows", "1");
+      selectedUser.mid = mid;
+      selectedUser.from = { _username, sid: socket.auth.sid };
+      socket.emit("private message", selectedUser);
+    }
     document.querySelector(".message-bar").value = "";
-    selectedUser.message = text;
     messageBar.setAttribute("rows", "1");
-    selectedUser.from = { _username, sid: socket.auth.sid };
-    socket.emit("private message", selectedUser);
   });
 
   // functions ...
@@ -172,7 +186,7 @@ window.onload = () => {
     const formatText = text.replace(/\n/g, "<br>");
     yourCardP.innerHTML = formatText;
     yourCard.appendChild(yourCardP);
-    document.querySelector(".load-chats").appendChild(yourCard);
+    document.querySelector(".load-chats-cont").appendChild(yourCard);
   }
 
   function handleTheirMesssage(text) {
@@ -181,7 +195,7 @@ window.onload = () => {
     theirCard.className = "other";
     theirCardP.textContent = text;
     theirCard.appendChild(theirCardP);
-    document.querySelector(".load-chats").appendChild(theirCard);
+    document.querySelector(".load-chats-cont").appendChild(theirCard);
   }
 
   function messageFromYou(you, sender) {
@@ -221,6 +235,7 @@ window.onload = () => {
     dispatchEvent(onlineUsersUpdated);
   });
   socket.on("new message", (selectedUser) => {
+    socket.emit("new message", selectedUser);
     messageFromYou(socket.auth, selectedUser.from)
       ? handleMyMesssage(selectedUser.message)
       : handleTheirMesssage(selectedUser.message);
