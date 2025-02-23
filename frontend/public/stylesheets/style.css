@@ -15,6 +15,9 @@ html {
   font-family: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   scroll-padding-bottom: 20px;
 }
+button {
+  cursor: pointer;
+}
 .d-none {
   display: none !important;
 }
@@ -52,6 +55,11 @@ header {
     font-family: "Poppins bold", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     font-size: 20px;
   }
+  .headerbtns {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   button.logout-btn {
     background-color: #b4f8c8;
     padding: 5px 15px;
@@ -59,6 +67,22 @@ header {
     font-weight: 600;
     cursor: pointer;
     border-radius: 5px;
+  }
+  .connectbtns {
+    display: flex;
+    justify-content: space-between;
+  }
+  button.disconnect {
+    width: 25px;
+    height: 25px;
+    background-color: #dc143c;
+    border-radius: 50%;
+  }
+  button.connect {
+    width: 25px;
+    height: 25px;
+    background-color: #adff2f;
+    border-radius: 50%;
   }
 }
 nav {
@@ -234,15 +258,35 @@ nav {
         font-size: 14px;
       }
     }
-    .card-image {
+    figure {
+      margin: 0;
+    }
+    .card-image,
+    figure {
       width: 50px;
       border-radius: 50%;
       cursor: pointer;
+      position: relative;
     }
     .time {
       padding: 0px 10px;
       cursor: default;
       font-size: 12px;
+    }
+    .offline,
+    .online {
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      border-radius: 50%;
+    }
+    .offline {
+      background-color: #dc143c;
+    }
+    .online {
+      background-color: green;
     }
   }
 }

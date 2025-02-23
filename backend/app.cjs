@@ -8,8 +8,10 @@ const session = require("express-session");
 const mongoDBStore = require("connect-mongodb-session")(session);
 const router = require("./routers/authRouter.cjs");
 const mainRouter = require("./routers/mainRouter.cjs");
+const messagesRouter = require("./routers/messagesRouter.cjs");
 const dotenv = require("dotenv");
 const { handleFindSocket } = require("./controllers/accController.cjs");
+const { updateMessages } = require("./controllers/messageController.cjs");
 // defining variables
 const app = express();
 var port = 5500;
@@ -38,6 +40,7 @@ io.use(async (socket, next) => {
   if (sock) {
     socket.sid = sock.sid;
     socket.uid = sock.uid;
+    socket.online = true;
   } else {
     console.error("your socket object could not be found!");
   }
@@ -62,6 +65,7 @@ io.on("connection", (socket) => {
   });
   socket.on("disconnect", () => {
     socket.broadcast.emit("user disconnected", {
+      uid: socket.uid,
       sid: socket.id,
       username: socket.username,
     });
@@ -100,9 +104,20 @@ io.on("connection", (socket) => {
         {}
       );
     }
-    console.log(newMessageObj, socket.username);
+    saveMessage(socket, newMessageObj);
   });
 });
+
+function saveMessage(socket, obj) {
+  if (socket.uid === obj.uid || socket.uid === obj.otherUid) {
+    updateMessages({
+      username: socket.username,
+      uid: socket.uid,
+      otherUid: obj.otherUid,
+      messageObj: obj.message,
+    });
+  }
+}
 
 //reloading my browser if theres file changes
 const liveServer = liveReload.createServer();
@@ -126,8 +141,9 @@ app.use(
     },
   })
 );
-app.use("/", router);
+app.use("/auth", router);
 app.use("/", mainRouter);
+app.use("/messages", messagesRouter);
 
 server.listen(port, () => {
   console.log(`express application running on port ${port}`);

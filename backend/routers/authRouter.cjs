@@ -22,11 +22,6 @@ const isEmail = (email) => {
     );
 };
 
-// loads the sign in page
-router.get("/", (req, res, next) => {
-  res.sendFile("./frontend/index.html", { root });
-});
-
 router.post("/isAuth", (req, res) => {
   if (req.session.isAuth) {
     res.json({

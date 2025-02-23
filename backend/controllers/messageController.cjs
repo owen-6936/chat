@@ -5,7 +5,7 @@ config();
 const db = process.env.DB;
 
 async function initializeMessages({ username, uid }) {
-  client
+  await client
     .db(db)
     .collection("messages")
     .insertOne({ username, uid, messages: [] })
@@ -14,36 +14,58 @@ async function initializeMessages({ username, uid }) {
     });
 }
 
-async function updateMessages({ username, uid, otherUid, newMessage, sender }) {
-  client
+async function updateMessages({ username, uid, otherUid, messageObj }) {
+  await client
     .db(db)
     .collection("messages")
     .findOne({ username, uid })
-    .then((data) => {
+    .then(async (data) => {
       if (data) {
-        const messages = data.messages;
-        const selectedMessage = messages.filter((message) => {
+        const userMessages = data.messages;
+        const selectedMessage = userMessages.filter((message) => {
           return message.uid === otherUid;
         });
         if (selectedMessage.length > 0) {
-          messages.forEach((message) => {
+          userMessages.forEach(async (message) => {
             if (message.uid === otherUid) {
-              message.messages.push({ sender, message: newMessage });
+              await client
+                .db(db)
+                .collection("messages")
+                .updateOne(
+                  { username, uid, "messages.uid": otherUid },
+                  {
+                    $push: {
+                      "messages.$.messages": messageObj,
+                    },
+                  }
+                )
+                .catch((err) => {
+                  console.error(
+                    "error initiating your messages collection",
+                    err
+                  );
+                });
             }
           });
         } else {
-          messages.push({
-            uid: otherUid,
-            messages: [{ sender, message: newMessage }],
-          });
+          await client
+            .db(db)
+            .collection("messages")
+            .updateOne(
+              { username, uid },
+              {
+                $push: {
+                  messages: {
+                    uid: otherUid,
+                    messages: [messageObj],
+                  },
+                },
+              }
+            )
+            .catch((err) => {
+              console.error("error initiating your messages collection", err);
+            });
         }
-        client
-          .db(db)
-          .collection("messages")
-          .updateOne({ username, uid }, data)
-          .catch((err) => {
-            console.error("error initiating your messages collection", err);
-          });
       }
     })
     .catch((err) => {
@@ -51,4 +73,32 @@ async function updateMessages({ username, uid, otherUid, newMessage, sender }) {
     });
 }
 
-module.exports = { initializeMessages, updateMessages };
+async function queryMessages({ username, uid, otherUid }) {
+  try {
+    const message = await client
+      .db(db)
+      .collection("messages")
+      .findOne(
+        {
+          username,
+          uid,
+          messages: {
+            $elemMatch: { uid: otherUid },
+          },
+        },
+        {
+          projection: {
+            username: 1,
+            uid: 1,
+            "messages.$": 1,
+          },
+        }
+      );
+    return message ? message.messages : null;
+  } catch (err) {
+    console.error("Error querying the messages collection", err);
+    throw err; // Re-throw the error after logging it
+  }
+}
+
+module.exports = { initializeMessages, updateMessages, queryMessages };

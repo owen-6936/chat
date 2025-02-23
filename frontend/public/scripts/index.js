@@ -11,7 +11,7 @@ window.onload = () => {
 
   // check authentication status
   (() => {
-    fetch("/isAuth", {
+    fetch("/auth/isAuth", {
       method: "POST",
       headers: { "Content-type": "application/json" },
       redirect: "follow",
@@ -58,7 +58,7 @@ window.onload = () => {
         });
         emailInput.value = "";
         pwInput.value = "";
-        fetch("/signin", {
+        fetch("/auth/signin", {
           body,
           method: "POST",
           headers: { "Content-type": "application/json" },
@@ -100,7 +100,7 @@ window.onload = () => {
       return val !== "";
     });
     if (nonEmptyValues.length === 5) {
-      fetch("/signup", {
+      fetch("/auth/signup", {
         body: JSON.stringify(body),
         method: "POST",
         headers: { "Content-type": "application/json" },
